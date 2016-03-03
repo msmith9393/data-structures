@@ -4,22 +4,22 @@ var Queue = function() {
   // Use an object with numeric keys to store values
   var storage = {};
   var count = 0;
+
   // Implement the methods below
 
   someInstance.enqueue = function(value) {
-    count++;
     storage[count] = value;
+    count++;
   };
 
   someInstance.dequeue = function() {
-    if ( count > 0 ) {
+    if (Object.keys(storage).length > 0) {
+      var dequeued = storage[0];
+      delete storage[0];
       count--;
-    }
-    for (var i = 1; i <= count + 1; i++) {
-      
-      var dequeued = storage[i];
-    
-      delete storage[i];
+      for (var i = 0; i < count; i++) {
+        storage[i] = storage[i + 1];
+      }
       return dequeued;
     }
   };
