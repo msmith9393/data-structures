@@ -18,7 +18,6 @@ var queueMethods = {
     if (this.count > 0) {
       this.count--;
       var dequeued = this[0];
-      delete this[0];
       for (var i = 0; i < this.count; i++) {
         this[i] = this[i + 1];
       }

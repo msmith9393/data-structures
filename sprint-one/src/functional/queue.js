@@ -15,7 +15,6 @@ var Queue = function() {
   someInstance.dequeue = function() {
     if (Object.keys(storage).length > 0) {
       var dequeued = storage[0];
-      delete storage[0];
       count--;
       for (var i = 0; i < count; i++) {
         storage[i] = storage[i + 1];
