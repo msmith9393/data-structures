@@ -20,6 +20,7 @@ var Queue = function() {
       for (var i = 0; i < count; i++) {
         storage[i] = storage[i + 1];
       }
+      delete storage[count];
       return dequeued;
     }
   };
