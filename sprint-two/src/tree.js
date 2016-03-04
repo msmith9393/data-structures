@@ -3,7 +3,7 @@ var Tree = function(value) {
   
 
   _.extend(newTree, treeMethods);
-  
+
   newTree.value = value;
   // your code here
   newTree.children = [];  // fix me
@@ -14,11 +14,33 @@ var Tree = function(value) {
 var treeMethods = {};
 
 treeMethods.addChild = function(value) {
-  // check if newTree.value doesn't exist
-    // create a node to represent a child with a value property set to given value and set that equal to newTree.value
+  var newNode = Tree(value);
+  this.children.push(newNode);
 };
 
 treeMethods.contains = function(target) {
+  
+
+  if (this.value === target) {
+    return true;
+  } 
+
+  if (this.children.length) {
+    for ( var i = 0; i < this.children.length; i++ ) {
+      return this.children[i].contains(target);
+    }  
+  }
+  
+  return false;
+  // var result = false;
+  // if (this.value === target) {
+  //   result = true;
+  // } else {
+  //   for (var i = 0; i < this.children.length; i++) {
+  //     this.children[i].contains(target);
+  //   }
+  // }
+  // return result;
 };
 
 
