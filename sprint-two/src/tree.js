@@ -19,32 +19,26 @@ treeMethods.addChild = function(value) {
 };
 
 treeMethods.contains = function(target) {
-  
 
   if (this.value === target) {
     return true;
   } 
 
-  if (this.children.length) {
+  if (this.children.length > 0) {
     for ( var i = 0; i < this.children.length; i++ ) {
-      return this.children[i].contains(target);
+      if (this.children[i].contains(target)) {
+        return true;
+      }
     }  
   }
   
   return false;
-  // var result = false;
-  // if (this.value === target) {
-  //   result = true;
-  // } else {
-  //   for (var i = 0; i < this.children.length; i++) {
-  //     this.children[i].contains(target);
-  //   }
-  // }
-  // return result;
 };
 
 
 
 /*
  * Complexity: What is the time complexity of the above functions?
+ addChild: O(1) - constant
+ contains: O(n^2) - quadratic
  */
