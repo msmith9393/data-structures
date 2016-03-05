@@ -10,19 +10,41 @@ BinarySearchTree.prototype.insert = function(value, currentNode) {
     if (currentNode.left === null) {
       currentNode.left = new BinarySearchTree(value);
     } else {
-      this.insert(value, currentNode.left);
+      currentNode.insert(value, currentNode.left);
     }
   } else {
     if (currentNode.right === null) {
       currentNode.right = new BinarySearchTree(value);
     } else {
-      this.insert(value, currentNode.right);
+      currentNode.insert(value, currentNode.right);
     }
   }
 };
 
-BinarySearchTree.prototype.contains = function(value) {
+BinarySearchTree.prototype.contains = function(value, currentNode) {
+  currentNode = currentNode || this;
 
+  // base cases
+  if (currentNode.value === value) {
+    return true;
+  } else if (currentNode.left === null && currentNode.right === null) {
+    return false;
+  }
+
+  // recursive cases
+  if (value < currentNode.value) {
+    if (currentNode.left === null) {
+      return false;
+    } else {
+      return currentNode.contains(value, currentNode.left); 
+    }
+  } else {
+    if (currentNode.right === null) {
+      return false;
+    } else {
+      return currentNode.contains(value, currentNode.right);
+    }
+  }
 };
 
 BinarySearchTree.prototype.depthFirstLog = function(callback) {
@@ -31,3 +53,48 @@ BinarySearchTree.prototype.depthFirstLog = function(callback) {
 /*
  * Complexity: What is the time complexity of the above functions?
  */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
