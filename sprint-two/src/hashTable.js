@@ -36,16 +36,23 @@ HashTable.prototype.retrieve = function(k) {
 HashTable.prototype.remove = function(k) {
   var index = getIndexBelowMaxForKey(k, this._limit);
   var bucket = this._storage.get(index);
-  
-
-  // this._storage.set(index, undefined);
-
+  if (bucket !== undefined) {
+    for (var i = 0; i < bucket.length; i++) {
+      if (bucket[i][0] === k) {
+        bucket.splice(i, 1);
+        break;
+      }
+    }
+  }
 };
 
 
 
 /*
  * Complexity: What is the time complexity of the above functions?
+ insert: O(1) - constant time, worst case scenario O(n) linear time
+ retrieve: O(1) - constant time, worst case scenario O(n) linear time
+ remove: O(1) - constant time, worst case scenario O(n) linear time
  */
 
 
