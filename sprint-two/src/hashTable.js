@@ -14,6 +14,9 @@ HashTable.prototype.insert = function(k, v) {
   }, function(bucket) {
     this._size++;
     bucket.push([k, v]);
+    if (this._size / this._limit > 0.75) {
+      this._resize(this._limit * 2);
+    }
   });
 };
 
@@ -28,6 +31,9 @@ HashTable.prototype.remove = function(k) {
     var oldTuple = tuple;
     bucket.splice(i, 1);
     this._size--;
+    if (this._size / this._limit < 0.25) {
+      this._resize(Math.floor(this._limit / 2));
+    }
     return oldTuple;  
   });
 };
@@ -50,16 +56,13 @@ HashTable.prototype._tupleSearch = function(key, foundCB, notFoundCB) {
 HashTable.prototype._resize = function(newLength) {
   var oldStorage = this._storage;
 
-  var newHashTable = LimitedArray(newLength);
-
-  oldStorage.each(function(bucket, i, storage) {
-    bucket = bucket || [];
-    for (var j = 0; j < bucket.length; j++) {
-      var tuple = bucket[j];
-      newHashTable.insert(tuple[0], tuple[1]);
+  oldStorage.each(function(bucket, index, storage) {
+    if (bucket) {
+      for (var i = 0; i < bucket.length; i++) {
+        this.insert(bucket[i][0], bucket[i][1]);
+      }
     }
   });
-  this._storage = newHashTable;
 };
 
 
