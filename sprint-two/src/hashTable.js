@@ -3,49 +3,64 @@
 var HashTable = function() {
   this._limit = 8;
   this._storage = LimitedArray(this._limit);
+  this._size = 0;
 };
 
 HashTable.prototype.insert = function(k, v) {
-  var index = getIndexBelowMaxForKey(k, this._limit);
-  var bucket = this._storage.get(index);
-  if (bucket === undefined) {
-    this._storage.set(index, [[k, v]]);      
-  } else {
-    for (var i = 0; i < bucket.length; i++) {
-      if (bucket[i][0] === k) {
-        bucket[i][1] = v;
-      } else {
-        this._storage.get(index).push([k, v]);
-      }
-    }
-  }
+  return this._tupleSearch(k, function(bucket, tuple, i) {
+    var last = tuple[1];
+    tuple[1] = v;
+    return last;
+  }, function(bucket) {
+    this._size++;
+    bucket.push([k, v]);
+  });
 };
 
 HashTable.prototype.retrieve = function(k) {
-  var index = getIndexBelowMaxForKey(k, this._limit);
-  var bucket = this._storage.get(index);
-  if (bucket !== undefined) {
-    for ( var i = 0; i < bucket.length; i++ ) {
-      if (bucket[i][0] === k) {
-        return bucket[i][1];
-      }
-    }
-  }
+  return this._tupleSearch(k, function(bucket, tuple, i) {
+    return tuple[1];
+  });
 };
 
 HashTable.prototype.remove = function(k) {
-  var index = getIndexBelowMaxForKey(k, this._limit);
-  var bucket = this._storage.get(index);
-  if (bucket !== undefined) {
-    for (var i = 0; i < bucket.length; i++) {
-      if (bucket[i][0] === k) {
-        bucket.splice(i, 1);
-        break;
-      }
-    }
-  }
+  return this._tupleSearch(k, function(bucket, tuple, i) {
+    var oldTuple = tuple;
+    bucket.splice(i, 1);
+    this._size--;
+    return oldTuple;  
+  });
 };
 
+HashTable.prototype._tupleSearch = function(key, foundCB, notFoundCB) {
+  var index = getIndexBelowMaxForKey(key, this._limit);
+  var bucket = this._storage.get(index) || [];
+
+  this._storage.set(index, bucket);
+
+  for (var i = 0; i < bucket.length; i++) {
+    var tuple = bucket[i];
+    if (tuple[0] === key) {
+      return foundCB.call(this, bucket, tuple, i);
+    } 
+  }
+  return notFoundCB ? notFoundCB.call(this, bucket) : undefined;
+};
+
+HashTable.prototype._resize = function(newLength) {
+  var oldStorage = this._storage;
+
+  var newHashTable = LimitedArray(newLength);
+
+  oldStorage.each(function(bucket, i, storage) {
+    bucket = bucket || [];
+    for (var j = 0; j < bucket.length; j++) {
+      var tuple = bucket[j];
+      newHashTable.insert(tuple[0], tuple[1]);
+    }
+  });
+  this._storage = newHashTable;
+};
 
 
 /*
